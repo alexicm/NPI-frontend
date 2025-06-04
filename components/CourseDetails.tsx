@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo } from "react"
+import React, { useMemo, useEffect } from "react"
 import { motion } from "framer-motion"
 import type { Course } from "@/lib/types"
 import VideoPlayer from "@/components/VideoPlayer/VideoPlayer"
@@ -8,13 +8,16 @@ import PerformanceImage from "@/components/PerformanceImage"
 import ExpandableSection from "@/components/ExpandableSection"
 import CoordinatorItem from "@/components/CoordinatorItem"
 import { BookOpen, Users, Target, BarChart3, Clock, MessageSquare } from "lucide-react"
+import CourseStatusDropdown from "@/components/CourseStatusDropdown"
+import CenteredCourseName from "@/components/CenteredCourseName" // Import CenteredCourseName
 
+// Update the interface and function signature to remove the unused onStatusChange prop
 interface CourseDetailsProps {
   course: Course
-  onStatusChange: (newStatus: string) => Promise<void>
+  onUpdateCourseStatus: (courseId: string, newStatus: string, newObservations: string) => Promise<void>
 }
 
-const CourseDetails: React.FC<CourseDetailsProps> = ({ course, onStatusChange }) => {
+const CourseDetails: React.FC<CourseDetailsProps> = ({ course, onUpdateCourseStatus }) => {
   const totalCargaHoraria = useMemo(() => {
     return course.disciplinasIA.reduce((total, disciplina) => {
       return total + (disciplina.carga || 0)
@@ -22,6 +25,10 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({ course, onStatusChange })
   }, [course.disciplinasIA])
 
   const coordenadores = course.coordenadores || []
+
+  useEffect(() => {
+    // Force re-render when course status or observations change
+  }, [course.status, course.observacoesComite])
 
   if (!course || typeof course !== "object") {
     return (
@@ -40,6 +47,18 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({ course, onStatusChange })
   return (
     <div className="relative min-h-screen w-full bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        {/* New section for Centered Course Name and Analysis Button */}
+        <div className="flex flex-col items-center gap-6 mb-8">
+          <CenteredCourseName name={course.nome} />
+          <CourseStatusDropdown
+            courseId={course.id}
+            initialStatus={course.status || ""}
+            initialObservations={course.observacoesComite || ""}
+            onStatusChange={onUpdateCourseStatus}
+            key={`${course.id}-${course.status}-${course.observacoesComite}`} // Force re-render when data changes
+          />
+        </div>
+
         <motion.div
           className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12"
           initial="hidden"

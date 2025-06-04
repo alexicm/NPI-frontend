@@ -4,6 +4,7 @@ import React, { useState, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronRight, User } from "lucide-react"
 import type { Coordinator } from "@/lib/types"
+import { formatCoordinatorName } from "@/lib/utils"
 
 interface CoordinatorItemProps {
   coordinator: Coordinator
@@ -43,7 +44,7 @@ const CoordinatorItem: React.FC<CoordinatorItemProps> = ({ coordinator }) => {
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-gray-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors truncate">
-              {coordinator.nome}
+              {formatCoordinatorName(coordinator.nome)}
             </h4>
             {coordinator.jaECoordenador && (
               <span className="inline-flex items-center mt-1 text-xs font-medium text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded-full">

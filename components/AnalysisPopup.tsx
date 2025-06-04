@@ -26,6 +26,7 @@ export default function AnalysisPopup({
   const [observations, setObservations] = useState(initialObservations || "")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,7 +41,12 @@ export default function AnalysisPopup({
 
     try {
       await onSubmit(courseId, selectedStatus, observations)
-      onClose()
+      setIsSuccess(true)
+
+      // Close the popup after a brief success indication
+      setTimeout(() => {
+        onClose()
+      }, 500)
     } catch (err) {
       setError("Ocorreu um erro ao salvar as alterações. Por favor, tente novamente.")
       console.error("Error submitting analysis:", err)
@@ -125,6 +131,13 @@ export default function AnalysisPopup({
               placeholder="Insira as observações do comitê sobre esta proposta..."
             ></textarea>
           </div>
+
+          {isSuccess && (
+            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-start">
+              <Check className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-green-600 dark:text-green-400">Análise salva com sucesso!</p>
+            </div>
+          )}
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start">

@@ -11,7 +11,7 @@ import CoordinatorFilter from "@/components/CoordinatorFilter"
 
 interface CourseSearchProps {
   courses: Record<string, Course>
-  onSelectCourse: (courseId: string) => void
+  onSelectCourse: (course: Course) => void
   searchTerm: string
   onSearchChange: (term: string) => void
   selectedCoordinators: string[]
@@ -41,11 +41,14 @@ export default function CourseSearch({
 
   const handleSelectCourse = useCallback(
     (courseKey: string) => {
-      onSelectCourse(courseKey)
-      onSearchChange("")
-      setIsDropdownOpen(false)
+      const course = courses[courseKey]
+      if (course) {
+        onSelectCourse(course)
+        onSearchChange("")
+        setIsDropdownOpen(false)
+      }
     },
-    [onSelectCourse, onSearchChange],
+    [courses, onSelectCourse, onSearchChange],
   )
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -71,11 +74,7 @@ export default function CourseSearch({
     return Object.entries(courses || {}).filter(([_, course]) => {
       const matchesSearch =
         course.nome.toLowerCase().includes(searchTermLower) ||
-        course.coordenadorSolicitante.toLowerCase().includes(searchTermLower) ||
-        course.status?.toLowerCase().includes(searchTermLower) ||
-        course.disciplinasIA.some((disciplina) =>
-          (typeof disciplina === "object" ? disciplina.nome : disciplina).toLowerCase().includes(searchTermLower),
-        )
+        course.coordenadorSolicitante.toLowerCase().includes(searchTermLower)
 
       const matchesCoordinator =
         selectedCoordinators.length === 0 || selectedCoordinators.includes(course.coordenadorSolicitante)
@@ -134,7 +133,7 @@ export default function CourseSearch({
         <input
           ref={searchInputRef}
           type="text"
-          placeholder="Pesquisar cursos por nome, coordenador, status ou disciplina..."
+          placeholder="Pesquisar cursos por nome ou coordenador..."
           value={searchTerm}
           onChange={handleSearch}
           onFocus={() => setIsDropdownOpen(true)}

@@ -2,6 +2,8 @@ import type React from "react"
 import "./globals.css"
 import { Inter } from "next/font/google"
 import type { Metadata } from "next"
+import { CoursesProvider } from "@/contexts/CoursesContext"
+import { DebugProvider } from "@/contexts/DebugContext"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +25,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className="h-full">
-      <body className={`${inter.className} h-full`}>{children}</body>
+      <body className={`${inter.className} h-full`}>
+        <DebugProvider>
+          <CoursesProvider>{children}</CoursesProvider>
+        </DebugProvider>
+      </body>
     </html>
   )
 }

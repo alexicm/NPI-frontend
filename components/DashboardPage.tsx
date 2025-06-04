@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, Users, TrendingUp, AlertCircle } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { useCourses } from "@/hooks/useCourses"
+import { useCourses } from "@/contexts/CoursesContext"
 import LoadingAnimation from "@/components/LoadingAnimation"
 import AppLayout from "@/components/layout/AppLayout"
 
@@ -59,13 +59,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <AppLayout
-      title="Dashboard de Propostas"
-      showBackButton={true}
-      showHomeButton={true}
-      showDashboardButton={false}
-      backUrl="/"
-    >
+    <AppLayout title="Dashboard" showBackButton={true} showHomeButton={true} showDashboardButton={false} backUrl="/">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

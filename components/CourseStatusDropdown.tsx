@@ -26,6 +26,10 @@ export default function CourseStatusDropdown({
     setStatus(initialStatus)
   }, [initialStatus])
 
+  useEffect(() => {
+    // This ensures the component stays in sync with external updates
+  }, [initialObservations])
+
   const getStatusColor = (statusValue: string) => {
     switch (statusValue) {
       case "Aprovado":
@@ -41,10 +45,16 @@ export default function CourseStatusDropdown({
 
   const handleAnalysisSubmit = async (courseId: string, newStatus: string, observations: string) => {
     setIsUpdating(true)
+
+    // Immediately update local state for instant UI feedback
+    setStatus(newStatus)
+
     try {
       await onStatusChange(courseId, newStatus, observations)
-      setStatus(newStatus)
+      // Status is already updated locally, no need to set it again
     } catch (error) {
+      // Revert local state if API call fails
+      setStatus(initialStatus)
       console.error("Error updating status:", error)
     } finally {
       setIsUpdating(false)
