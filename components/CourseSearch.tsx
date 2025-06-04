@@ -7,31 +7,45 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Search, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { Course } from "@/lib/types"
+import CoordinatorFilter from "@/components/CoordinatorFilter"
 
 interface CourseSearchProps {
   courses: Record<string, Course>
   onSelectCourse: (courseId: string) => void
+  searchTerm: string
+  onSearchChange: (term: string) => void
+  selectedCoordinators: string[]
+  onCoordinatorChange: (coordinators: string[]) => void
 }
 
-export default function CourseSearch({ courses, onSelectCourse }: CourseSearchProps) {
-  const [searchTerm, setSearchTerm] = useState("")
+export default function CourseSearch({
+  courses,
+  onSelectCourse,
+  searchTerm,
+  onSearchChange,
+  selectedCoordinators,
+  onCoordinatorChange,
+}: CourseSearchProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    setSearchTerm(value)
-    setIsDropdownOpen(true)
-  }, [])
+  const handleSearch = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value
+      onSearchChange(value)
+      setIsDropdownOpen(true)
+    },
+    [onSearchChange],
+  )
 
   const handleSelectCourse = useCallback(
     (courseKey: string) => {
       onSelectCourse(courseKey)
-      setSearchTerm("")
+      onSearchChange("")
       setIsDropdownOpen(false)
     },
-    [onSelectCourse],
+    [onSelectCourse, onSearchChange],
   )
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -54,16 +68,21 @@ export default function CourseSearch({ courses, onSelectCourse }: CourseSearchPr
 
   const filteredCourses = useMemo(() => {
     const searchTermLower = searchTerm.toLowerCase()
-    return Object.entries(courses).filter(
-      ([_, course]) =>
+    return Object.entries(courses || {}).filter(([_, course]) => {
+      const matchesSearch =
         course.nome.toLowerCase().includes(searchTermLower) ||
         course.coordenadorSolicitante.toLowerCase().includes(searchTermLower) ||
         course.status?.toLowerCase().includes(searchTermLower) ||
         course.disciplinasIA.some((disciplina) =>
           (typeof disciplina === "object" ? disciplina.nome : disciplina).toLowerCase().includes(searchTermLower),
-        ),
-    )
-  }, [courses, searchTerm])
+        )
+
+      const matchesCoordinator =
+        selectedCoordinators.length === 0 || selectedCoordinators.includes(course.coordenadorSolicitante)
+
+      return matchesSearch && matchesCoordinator
+    })
+  }, [courses, searchTerm, selectedCoordinators])
 
   const groupCoursesBySolicitante = useMemo(() => {
     const grouped: Record<string, { key: string; nome: string; status: string }[]> = {}
@@ -84,12 +103,10 @@ export default function CourseSearch({ courses, onSelectCourse }: CourseSearchPr
       }
     })
 
-    // Sort courses within each group alphabetically by course name
     for (const solicitante in grouped) {
       grouped[solicitante].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" }))
     }
 
-    // Sort the groups by solicitante name alphabetically
     const sortedGroupedEntries = Object.entries(grouped).sort(([solicitanteA], [solicitanteB]) =>
       solicitanteA.localeCompare(solicitanteB, "pt-BR", { sensitivity: "base" }),
     )
@@ -111,7 +128,7 @@ export default function CourseSearch({ courses, onSelectCourse }: CourseSearchPr
   }, [])
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto mt-4 sm:mt-6 lg:mt-8 px-4 sm:px-6 lg:px-8">
+    <div className="relative w-full">
       <div className="relative">
         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
         <input
@@ -134,6 +151,15 @@ export default function CourseSearch({ courses, onSelectCourse }: CourseSearchPr
           )}
           aria-label="Pesquisar cursos"
           role="searchbox"
+        />
+      </div>
+
+      {/* Coordinator Filter */}
+      <div className="mt-3">
+        <CoordinatorFilter
+          courses={courses}
+          selectedCoordinators={selectedCoordinators}
+          onCoordinatorChange={onCoordinatorChange}
         />
       </div>
 

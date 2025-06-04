@@ -13,7 +13,7 @@ export interface Coordinator {
 
 export interface Course {
   id: string
-  nome: string
+  nome: string // Standardized to 'nome'
   coordenadorSolicitante: string
   coordenadores: Coordinator[]
   apresentacao: string
@@ -26,9 +26,10 @@ export interface Course {
   }>
   performance: string
   videoUrl: string
-  disciplinasIA: Array<{ nome: string; carga: string }>
+  disciplinasIA: Array<{ nome: string; carga: number }>
   status?: string
   observacoesComite: string
+  cargaHoraria?: number
 }
 
 export interface AuthResponse {

@@ -1,129 +1,93 @@
 "use client"
 
-import { useState } from "react"
-import Image from "next/image"
-import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import AddUserModal from "@/components/AddUserModal"
-import ManageUsersModal from "@/components/ManageUsersModal"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { BookOpen, Users } from "lucide-react"
+import AppLayout from "@/components/layout/AppLayout"
 
 export default function LandingPage() {
   const router = useRouter()
-  const [showAddUserModal, setShowAddUserModal] = useState(false)
-  const [showManageUsersModal, setShowManageUsersModal] = useState(false)
 
-  const handleExploreClick = () => {
-    router.push("/course-proposal")
+  const handleNavigation = (path: string) => {
+    router.push(path)
   }
 
-  const items = [
-    {
-      icon: "📚",
-      title: "Comitê Unyleya",
-      description: "Veja as propostas de cursos para o próximo comitê",
-      onClick: handleExploreClick,
-    },
-    {
-      icon: "📋",
-      title: "Meus Cursos",
-      description: "Acesse os cursos sob sua coordenação",
-      onClick: () => router.push("/coordinator-courses"),
-    },
-    {
-      icon: "🌟",
-      title: "Excelência Acadêmica",
-      description: "Aprenda com os melhores especialistas e pesquisadores em suas áreas.",
-    },
-    {
-      icon: "🚀",
-      title: "Desenvolvimento de Carreira",
-      description: "Impulsione sua carreira com cursos alinhados às demandas da indústria.",
-    },
-  ]
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-400 to-pink-600 flex flex-col">
-      <header className="bg-gradient-to-r from-orange-500 to-pink-600 shadow-lg p-4 flex justify-between items-center">
-      </header>
-
-      <div className="flex-grow flex flex-col justify-center items-center p-4">
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <div className="bg-white p-2 rounded-full shadow-md inline-block mb-8">
-            <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/uny_logo-pEYx6pRnSznZKeclaZApEzV7ztgHVq.png"
-              alt="Unyleya Logo"
-              width={100}
-              height={100}
-              className="rounded-full"
-            />
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">Gestão de Projetos Unyleya</h1>
-          <h2 className="text-2xl md:text-4xl font-semibold text-white mb-8">Novos Projetos</h2>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="bg-white rounded-lg shadow-2xl p-8 max-w-2xl w-full"
-        >
-          <h3 className="text-3xl font-bold text-gray-800 mb-6 text-center">Bem-vindo à Interface de Apresentação</h3>
-          <p className="text-xl text-gray-600 mb-8 text-center">
-            Explore o futuro da educação com nossas propostas inovadoras de cursos.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {items.map((item, index) => (
-              <FeatureCard
-                key={index}
-                icon={item.icon}
-                title={item.title}
-                description={item.description}
-                onClick={item.onClick}
-              />
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="mt-12 px-8 py-4 bg-white text-orange-500 rounded-full text-xl font-bold shadow-lg hover:bg-orange-100 transition duration-300"
-          onClick={handleExploreClick}
-        >
-          Explorar Propostas
-        </motion.button>
-      </div>
-
-    </div>
-  )
-}
-
-const FeatureCard = ({
-  icon,
-  title,
-  description,
-  onClick,
-}: {
-  icon: string
-  title: string
-  description: string
-  onClick?: () => void
-}) => {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      className="bg-orange-50 rounded-lg p-6 shadow-md cursor-pointer"
-      onClick={onClick}
+    <AppLayout
+      title="Bem-vindo ao NPI Frontend"
+      showHomeButton={false}
+      showBackButton={false}
+      showDashboardButton={true}
     >
-      <div className="text-4xl mb-4">{icon}</div>
-      <h4 className="text-xl font-semibold text-gray-800 mb-2">{title}</h4>
-      <p className="text-gray-600">{description}</p>
-    </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-4 py-8"
+      >
+        <h1 className="text-4xl md:text-5xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8 leading-tight">
+          Sistema de Gestão de Propostas de Cursos
+        </h1>
+        <p className="text-lg text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl">
+          Gerencie e acompanhe o ciclo de vida das propostas de novos cursos e a performance dos coordenadores.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Card className="h-full flex flex-col justify-between p-6 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl font-semibold text-orange-600 flex items-center gap-3">
+                  <BookOpen className="w-7 h-7" />
+                  Propostas de Cursos
+                </CardTitle>
+                <CardDescription className="mt-2 text-gray-600">
+                  Visualize e gerencie todas as propostas de cursos, acompanhe seus status e detalhes.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <Button
+                  onClick={() => handleNavigation("/course-proposal")}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg text-lg font-semibold transition-colors duration-300"
+                >
+                  Ver Propostas
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <Card className="h-full flex flex-col justify-between p-6 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl font-semibold text-pink-600 flex items-center gap-3">
+                  <Users className="w-7 h-7" />
+                  Cursos por Coordenador
+                </CardTitle>
+                <CardDescription className="mt-2 text-gray-600">
+                  Explore os cursos associados a cada coordenador e suas informações detalhadas.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <Button
+                  onClick={() => handleNavigation("/coordinator-courses")}
+                  className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-lg text-lg font-semibold transition-colors duration-300"
+                >
+                  Ver Coordenadores
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </motion.div>
+    </AppLayout>
   )
 }

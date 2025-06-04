@@ -21,9 +21,10 @@ export function useCourses() {
           "Content-Type": "application/json",
         },
       })
+      const data = await response.json()
+      console.log
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
-      const data = await response.json()
       }
       if (typeof data === "object" && data !== null) {
         setCourses(data)
